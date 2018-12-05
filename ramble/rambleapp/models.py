@@ -18,3 +18,7 @@ class Share(models.Model):
   user_id = models.ForeignKey(User, on_delete=models.CASCADE)
   post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
 
+class Comment(models.Model):
+  user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+  post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
+  comment_text = models.CharField(max_length=1000)

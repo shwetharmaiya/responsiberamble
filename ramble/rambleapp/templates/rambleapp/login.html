@@ -1,3 +1,11 @@
-{% block content %}
+<!--{% block content %}
   <a href="{% url 'social:begin' 'twitter' %}">Login with Twitter</a>
-{% endblock %}
+{% endblock %}-->
+<h3>Twitter</h3>
+  {% if twitter_login %}
+    <p>Connected as <a href="https://twitter.com/{{ twitter_login.extra_data.access_token.screen_name }}/" target="_blank">@{{ twitter_login.extra_data.access_token.screen_name }}</a></p>
+     <a href="logout/">Logout</a>
+
+  {% else %}
+    <a href="{% url 'social:begin' 'twitter' %}">Connect to Twitter</a>
+  {% endif %}

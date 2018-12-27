@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% if profile_user %}
+        <title>{{ profile_user.first_name }} {{ profile_user.last_name }} (@{{ profile_user.username}}) | Ramble  </title>
+    {% else %}
+        <title> 404 User Not Found </title>
+    {% endif %}
+</head>
+<body>
+
+{% if profile_user %}
+    <p>{{ profile_user.first_name }} {{ profile_user.last_name }} (@{{ profile_user.username}})</p>
+{% else %}
+    <p> 404 User Not Found</p>
+{% endif %}
+
+{% for post in posts %}
+    <div>
+        <p> <a href="../post/{{ post.pk }}"> published: {{ post.post_timestamp }} </a> </p>
+        <h2><a href="../u/{{ post.user_id.id }}">{{ post.user_id }}</a></h2>
+        <p>{{ post.post_text|linebreaksbr }}</p>
+    </div>
+{% endfor %}
+
+</body>
+</html>

@@ -1,5 +1,28 @@
 {% block content %}
-  <h2>Ramble</h2>
-  <p>Hello {{ user.username }}!</p>
-  <a href="logout"><button>Logout</button></a>
+<h2>Ramble</h2>
+<p>Hello {{ user.username }}!</p>
+<a href="logout"><button>Logout</button></a>
+
+<br/> <br/>
+
+<form action="ramblepost" method="post">
+    {% csrf_token %}
+    <div style="text-align:right;padding:0 10%">
+        <textarea id="new_ramble_post" name="new_ramble_post"
+              style="width:100%;height:40vh;margin-bottom:10px"
+        >
+        </textarea>
+        <input type="submit" value="Ramble">
+    </div>
+</form>
+
+{% for post in posts %}
+    <div>
+        <p>published: {{ post.post_timestamp }}</p>
+        <h2><a href="u/{{ post.user_id.id }}">{{ post.user_id }}</a></h2>
+        <p>{{ post.post_text|linebreaksbr }}</p>
+    </div>
+{% endfor %}
+
+
 {% endblock %}

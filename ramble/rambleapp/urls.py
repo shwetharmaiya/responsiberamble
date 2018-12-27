@@ -9,6 +9,7 @@ urlpatterns = [
   path('u/<int:user_id>', views.user_profile, name='user_profile'),
   path('post/<int:post_id>', views.post, name='post'), 
   path('login', views.login, name='login'),
+  path('logout', views.logout, name='logout'),
   #path('accounts/login/', views.login, name='sociallogin'),
   url(r'^oauth/', include('social_django.urls', namespace='social')),
 ]

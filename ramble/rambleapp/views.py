@@ -4,6 +4,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout as auth_logout
+from django.shortcuts import redirect
 
 from social_django.models import UserSocialAuth
 
@@ -11,7 +13,7 @@ from social_django.models import UserSocialAuth
 @login_required
 def index(request):
   template = loader.get_template('rambleapp/index.html')
-  context = {'latest_question_list': "fuckin 404", }
+  context = {}
   return HttpResponse(template.render(context, request))
 
 def user_profile(request, user_id):
@@ -28,6 +30,10 @@ def login(request):
   template = loader.get_template('rambleapp/login.html')
   context = {'twitter_login': twitter_login, }
   return HttpResponse(template.render(context, request))
+
+def logout(request):
+  auth_logout(request)
+  return redirect('index')
 
 def post(request, post_id):
   return HttpResponse("This is a post page!")

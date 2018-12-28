@@ -12,8 +12,6 @@ from .models import Post
 from django.contrib.auth.models import User as Auth_User
 
 
-
-
 @login_required
 def index(request):
   template = loader.get_template('rambleapp/index.html')
@@ -21,8 +19,9 @@ def index(request):
   # get all previous posts
   posts = Post.objects.all().order_by('post_timestamp')
 
-  context = {'posts':posts }
+  context = {'posts': posts}
   return HttpResponse(template.render(context, request))
+
 
 @login_required
 def post_ramble(request):
@@ -31,6 +30,7 @@ def post_ramble(request):
   new_post = Post(user_id=user, post_text=post_text)
   new_post.save()
   return redirect('index')
+
 
 def user_profile(request, user_id):
   try:
@@ -46,6 +46,7 @@ def user_profile(request, user_id):
   template = loader.get_template('rambleapp/user.html')
   return HttpResponse(template.render(context, request))
 
+
 def login(request):
   user = request.user
   try:
@@ -58,9 +59,11 @@ def login(request):
   context = {'twitter_login': twitter_login, }
   return HttpResponse(template.render(context, request))
 
+
 def logout(request):
   auth_logout(request)
   return redirect('index')
+
 
 def post(request, post_id):
   try:

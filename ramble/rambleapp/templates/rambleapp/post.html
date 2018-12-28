@@ -2,9 +2,13 @@
 {% block content %}
     {% if post %}
         <div>
-            <p> <a href="../post/{{ post.pk }}"> published: {{ post.post_timestamp }} </a> </p>
-            <h2><a href="../u/{{ post.user_id.id }}">{{ post.user_id }}</a></h2>
-            <p>{{ post.post_text|linebreaksbr }}</p>
+            <p class="post-username">
+                <a href="../u/{{ post.user_id.id }}">{{ post.user_id.first_name }} {{ post.user_id.last_name }}</a>
+            </p>
+            <p class="post-timestamp">
+                <a href="../post/{{ post.pk }}"> published: {{ post.post_timestamp }} </a>
+            </p>
+            <p class="post-format">{{ post.post_text|linebreaksbr }}</p>
         </div>
     {% else %}
         <p> 404 Post not found </p>

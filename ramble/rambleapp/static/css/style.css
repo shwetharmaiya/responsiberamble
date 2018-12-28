@@ -10,6 +10,24 @@
 
 .header a { text-decoration: none; color:white; }
 
+.post-text {
+    font-size: 18px;
+    font-family: Georgia;
+    line-height: 1.618;
+}
+
+.post-username {
+    font-size: 20px;
+    font-family: Georgia
+}
+
+.post-timestamp {
+    font-size: 8px;
+    font-family: Georgia
+}
+
+a {text-decoration: underline; color:black; }
+
 table {
 color:inherit;
 width:100%;

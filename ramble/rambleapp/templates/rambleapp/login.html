@@ -1,6 +1,5 @@
-<!--{% block content %}
-  <a href="{% url 'social:begin' 'twitter' %}">Login with Twitter</a>
-{% endblock %}-->
+{% extends './base.html' %}
+{% block content %}
 <h3>Login to Ramble</h3>
   {% if twitter_login %}
     <p>Connected as <a href="https://twitter.com/{{ twitter_login.extra_data.access_token.screen_name }}/" target="_blank">@{{ twitter_login.extra_data.access_token.screen_name }}</a></p>
@@ -9,3 +8,4 @@
   {% else %}
     <a href="{% url 'social:begin' 'twitter' %}">Login with Twitter</a>
   {% endif %}
+{% endblock %}

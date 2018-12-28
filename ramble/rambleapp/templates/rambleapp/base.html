@@ -1,0 +1,34 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Ramble - Write, Read, Curate</title>
+</head>
+<body style="margin:0">
+<div class="header">
+    <table>
+        <tr>
+            <td>
+                <a href="{% url 'index' %}"> <h1>Ramble</h1> </a>
+                <p> Read, Write, Curate</p>
+            </td>
+            <td style="text-align:right">
+                {% if user.username %}
+                    <div style="text-align:right; font-size:small">
+                        <p>
+                            Hello {{ user.username }}!
+                            <a href="{% url 'logout' %}"><button style="font-size:small">Logout</button></a>
+                         </p>
+                    </div>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+</div>
+<div style="margin:50px">
+{% block content %}
+{% endblock %}
+</div>
+</body>
+</html>

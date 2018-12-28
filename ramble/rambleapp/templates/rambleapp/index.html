@@ -1,9 +1,6 @@
-{% block content %}
-<h2>Ramble</h2>
-<p>Hello {{ user.username }}!</p>
-<a href="logout"><button>Logout</button></a>
+{% extends './base.html' %}
 
-<br/> <br/>
+{% block content %}
 
 <form action="ramblepost" method="post">
     {% csrf_token %}

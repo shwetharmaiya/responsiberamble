@@ -1,14 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    {% if profile_user %}
-        <title>{{ profile_user.first_name }} {{ profile_user.last_name }} (@{{ profile_user.username}}) | Ramble  </title>
-    {% else %}
-        <title> 404 User Not Found </title>
-    {% endif %}
-</head>
-<body>
+{% extends './base.html' %}
+{% block content %}
 
 {% if profile_user %}
     <p>{{ profile_user.first_name }} {{ profile_user.last_name }} (@{{ profile_user.username}})</p>
@@ -23,6 +14,4 @@
         <p>{{ post.post_text|linebreaksbr }}</p>
     </div>
 {% endfor %}
-
-</body>
-</html>
+{% endblock %}

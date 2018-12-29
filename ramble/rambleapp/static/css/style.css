@@ -32,12 +32,19 @@
 
 a {text-decoration: underline; color:black; }
 
+.iconbutton {
+    background:white;
+    color:black;
+    padding:0;
+}
+
 button {
 background:black;
 color:white;
 border-radius:4px;
 padding:10px;
 }
+
 
 table {
 color:inherit;

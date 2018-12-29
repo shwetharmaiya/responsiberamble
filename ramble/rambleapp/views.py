@@ -73,7 +73,10 @@ def login(request):
     except AttributeError:
         twitter_login = None
     template = loader.get_template('rambleapp/login.html')
-    context = {'twitter_login': twitter_login, }
+
+    posts = Post.objects.all().order_by('-post_timestamp')
+
+    context = {'twitter_login': twitter_login, 'posts': posts}
     return HttpResponse(template.render(context, request))
 
 

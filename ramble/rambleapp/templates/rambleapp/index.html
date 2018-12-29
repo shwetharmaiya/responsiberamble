@@ -8,14 +8,17 @@
             new_ramble_title: new_ramble_title.value,
             new_ramble_post: new_ramble_post.value
         }
-        if(1)
-        {
+
             var ajax = new XMLHttpRequest()
             ajax.open("POST", "ramblepost")
             ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
             ajax.onreadystatechange = function(response)
             {
                 console.log(response, this.status, this.readyState)
+
+                if (this.readyState == 4) {
+                    window.location = "post/" + this.responseText
+                }
             }
 
             var formData = new FormData()
@@ -23,17 +26,7 @@
                 formData.append(i, data[i]);
 
             ajax.send(formData)
-        }
-        else
-        {
-            $.ajax({
-                 url: "ramblepost",
-                 data: data,
-                 type: "POST",
-                 beforeSend: function(xhr){xhr.setRequestHeader('X-CSRFToken', "{{csrf_token}}");},
-                 success: function(){console.log("SUCCESS")},
-              });
-        }
+
     }
 </script>
 

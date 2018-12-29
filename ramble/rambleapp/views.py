@@ -30,8 +30,9 @@ def post_ramble(request):
     user = Auth_User.objects.get(pk=request.user.id)
     new_post = Post(user_id=user, post_text=post_text, post_title=post_title)
     new_post.save()
-    return HttpResponse(status=204)
-    # return redirect('index')
+    pk = new_post.pk
+    #return HttpResponse(status=204)
+    return HttpResponse(pk)
 
 
 @login_required

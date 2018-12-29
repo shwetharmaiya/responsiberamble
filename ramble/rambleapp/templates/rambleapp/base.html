@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
     <title>Ramble - Write, Read, Curate</title>
 </head>
 <body style="margin:0">
@@ -17,7 +18,7 @@
                 {% if user.username %}
                     <div style="text-align:right; font-size:small">
                         <p>
-                            Hello {{ user.username }}!
+                            Hello <a href="../u/{{ user.id }}"> {{ user.username }}! </a>
                             <a href="{% url 'logout' %}"><button style="font-size:small">Logout</button></a>
                          </p>
                     </div>

@@ -10,6 +10,10 @@
 
 .header a { text-decoration: none; color:white; }
 
+.post-title {
+    font-size: 24px;
+    font-family: Georgia;
+}
 .post-text {
     font-size: 18px;
     font-family: Georgia;
@@ -17,7 +21,7 @@
 }
 
 .post-username {
-    font-size: 20px;
+    font-size: 14px;
     font-family: Georgia
 }
 
@@ -27,6 +31,13 @@
 }
 
 a {text-decoration: underline; color:black; }
+
+button {
+background:black;
+color:white;
+border-radius:4px;
+padding:10px;
+}
 
 table {
 color:inherit;

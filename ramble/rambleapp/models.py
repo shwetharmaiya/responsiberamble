@@ -9,6 +9,7 @@ from datetime import datetime
 class Post(models.Model):
   user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
   post_timestamp = models.DateTimeField(default=datetime.now)
+  post_title = models.CharField(max_length=100)
   post_text = models.CharField(max_length=10000)
 
 

@@ -2,8 +2,11 @@
 {% block content %}
     {% if post %}
         <div>
+            <p class="post-title">
+                <a href="../post/{{ post.pk }}">{{ post.post_title }}</a>
+            </p>
             <p class="post-username">
-                <a href="../u/{{ post.user_id.id }}">{{ post.user_id.first_name }} {{ post.user_id.last_name }}</a>
+                <a href="../u/{{ post.user_id.id }}">by {{ post.user_id.first_name }} {{ post.user_id.last_name }}</a>
             </p>
             <p class="post-timestamp">
                 <a href="../post/{{ post.pk }}"> published: {{ post.post_timestamp }} </a>

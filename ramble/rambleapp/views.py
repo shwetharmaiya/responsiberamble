@@ -25,11 +25,14 @@ def index(request):
 
 @login_required
 def post_ramble(request):
+  print(request.POST)
   post_text = request.POST['new_ramble_post']
+  post_title = request.POST['new_ramble_title']
   user = Auth_User.objects.get(pk=request.user.id)
-  new_post = Post(user_id=user, post_text=post_text)
+  new_post = Post(user_id=user, post_text=post_text, post_title=post_title)
   new_post.save()
-  return redirect('index')
+  return HttpResponse(status=204)
+  #return redirect('index')
 
 
 def user_profile(request, user_id):

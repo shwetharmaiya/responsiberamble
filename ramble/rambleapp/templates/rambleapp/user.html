@@ -25,7 +25,7 @@
         <p class="post-timestamp">
             <a href="../post/{{ post.pk }}"> published: {{ post.post_timestamp }} </a>
         </p>
-        <p class="post-format">{{ post.post_text|linebreaksbr }}</p>
+        <p class="post-format">{{ post.post_text|safe }}</p>
     </div>
 {% endfor %}
 {% endblock %}

@@ -7,7 +7,7 @@
     {
         data = {
             new_ramble_title: new_ramble_title.value,
-            new_ramble_post: new_ramble_post.value
+            new_ramble_post: tinyMCE.activeEditor.getContent()
         }
 
             var ajax = new XMLHttpRequest()
@@ -60,7 +60,7 @@
         <p class="post-timestamp">
             <a href="../post/{{ post.pk }}"> published: {{ post.post_timestamp }} </a>
         </p>
-        <p class="post-format">{{ post.post_text|linebreaksbr }}</p>
+        <p class="post-format">{{ post.post_text|safe }}</p>
     </div>
 {% endfor %}
 

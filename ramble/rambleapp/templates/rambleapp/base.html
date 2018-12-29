@@ -5,6 +5,40 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
     <title>Ramble - Write, Read, Curate</title>
+
+    <script>
+    function delete_post(post_id)
+    {
+
+        var deleted_post_div = document.getElementById("post_"+post_id);
+        deleted_post_div.style.opacity=0.5;
+        deleted_post_div.style.height=deleted_post_div.clientHeight+'px';
+        data = {
+            post_id: post_id,
+        }
+        var ajax = new XMLHttpRequest()
+        ajax.open("POST", "deletepost")
+        ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+        ajax.onreadystatechange = function(response)
+        {
+            console.log(response, this.status, this.readyState)
+
+            if (this.readyState == 4) {
+                deleted_post_div.style.opacity=0;
+                setTimeout(function(){
+                    deleted_post_div.style.height=0;
+                }, 1000)
+            }
+        }
+
+        var formData = new FormData()
+        for(var i in data)
+            formData.append(i, data[i]);
+
+        ajax.send(formData)
+
+    }
+    </script>
 </head>
 <body style="margin:0">
 <div class="header">

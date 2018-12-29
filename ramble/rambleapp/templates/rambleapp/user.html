@@ -8,16 +8,19 @@
 {% endif %}
 
 {% for post in posts %}
-    <div>
+     <div id="post_{{post.pk}}" style="transition:all 1s ease">
         <p class="post-title">
             <a href="../post/{{ post.pk }}">{{ post.post_title }}</a>
         </p>
         <p class="post-username">
-            <a href="../u/{{ post.user_id.id }}">by {{ post.user_id.first_name }} {{ post.user_id.last_name }}</a>
+            by <a href="../u/{{ post.user_id.id }}">{{ post.user_id.first_name }} {{ post.user_id.last_name }}</a>
         </p>
         <p class="post-timestamp">
             <a href="../post/{{ post.pk }}"> published: {{ post.post_timestamp }} </a>
         </p>
+        {% if post.user_id.id == user.id %}
+            <button onclick="delete_post({{ post.pk }})"> Delete Post </button>
+        {% endif %}
         <p class="post-format">{{ post.post_text|linebreaksbr }}</p>
     </div>
 {% endfor %}

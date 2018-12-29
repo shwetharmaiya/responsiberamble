@@ -7,23 +7,23 @@ from datetime import datetime
 # Create your models here.
 
 class Post(models.Model):
-  user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
-  post_timestamp = models.DateTimeField(default=datetime.now)
-  post_title = models.CharField(max_length=100)
-  post_text = models.CharField(max_length=10000)
+    user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
+    post_timestamp = models.DateTimeField(default=datetime.now)
+    post_title = models.CharField(max_length=100)
+    post_text = models.CharField(max_length=10000)
 
 
 class Like(models.Model):
-  user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
-  post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
+    post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
 
 
 class Share(models.Model):
-  user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
-  post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
+    post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
 
 
 class Comment(models.Model):
-  user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
-  post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
-  comment_text = models.CharField(max_length=1000)
+    user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
+    post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
+    comment_text = models.CharField(max_length=1000)

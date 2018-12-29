@@ -31,12 +31,22 @@
     }
 </script>
 
+<script src='https://cloud.tinymce.com/stable/tinymce.min.js'></script>
+<script>
+    tinymce.init({
+        selector: '#new_ramble_post',
+        plugins: "link",
+    });
+</script>
+
 
     {% csrf_token %}
     <div style="text-align:right;padding:0 10%">
-        <input type="text" id="new_ramble_title" name="new_ramble_title" maxlength="100"
-        style="width:100%; margin-bottom:10px; font-size:24px"/>
-        <textarea id="new_ramble_post" name="new_ramble_post"
+        <input type="text" id="new_ramble_title" name="new_ramble_title" maxlength="100" placeholder="Title"
+        style="width:100%; margin-bottom:10px; font-size:24px;
+        border-width: thin;box-shadow: inset 0 0 1px 1px #888;
+        padding: 5px 10px 5px 10px; "/>
+        <textarea id="new_ramble_post" name="new_ramble_post" maxlength="10000" placeholder="Tell your story..."
               style="width:100%;height:40vh;margin-bottom:10px"
         ></textarea>
         <button onclick="submit_ramble()"> Ramble </button>

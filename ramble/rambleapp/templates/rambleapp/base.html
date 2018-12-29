@@ -55,7 +55,8 @@
                 {% if user.username %}
                     <div style="text-align:right; font-size:small">
                         <p>
-                            Hello <a href="../u/{{ user.id }}"> {{ user.username }}! </a>
+                            Hello <a href="../u/{{ user.id }}"> {{ user.first_name }}! </a>
+                            &nbsp &nbsp;
                             <a href="{% url 'logout' %}"><button style="font-size:small">Logout</button></a>
                          </p>
                     </div>

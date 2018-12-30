@@ -43,6 +43,39 @@
         ajax.send(formData)
 
     }
+
+    function like_post(post_id)
+    {
+        var post_div = document.getElementById("post_"+post_id);
+        if (document.getElementById("like_"+post_id).src == "{% static 'images/liked_button.png' %}")
+        {
+            document.getElementById("like_"+post_id).src = "{% static 'images/like_button.png' %}";
+        }
+        else
+        {
+            document.getElementById("like_"+post_id).src = "{% static 'images/liked_button.png' %}";
+        }
+
+        data = {
+            post_id: post_id,
+        }
+        var ajax = new XMLHttpRequest()
+        ajax.open("POST", "likepost")
+        ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+        ajax.onreadystatechange = function(response)
+        {
+            console.log(response, this.status, this.readyState)
+        }
+
+        var formData = new FormData()
+        for(var i in data)
+            formData.append(i, data[i]);
+
+        ajax.send(formData)
+
+    }
+
+
     </script>
 </head>
 <body style="margin:0">

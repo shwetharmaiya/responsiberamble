@@ -10,6 +10,7 @@ urlpatterns = [
   path('post/<int:post_id>', views.get_ramblepost, name='post'),
   path('ramblepost', views.post_ramble, name='post_a_ramble'),
   path('deletepost', views.delete_post, name='delete_a_ramble'),
+  path('likepost', views.like_post, name='like_a_ramble'),
   path('login', views.login, name='login'),
   path('logout', views.logout, name='logout'),
   # path('accounts/login/', views.login, name='sociallogin'),

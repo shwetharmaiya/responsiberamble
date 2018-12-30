@@ -48,6 +48,19 @@ def delete_post(request):
     else:
         return HttpResponse(status=400)
 
+@login_required
+def like_post(request):
+    user = Auth_User.objects.get(pk=request.user.id)
+    post_id = request.POST['post_id']
+    post = Post.objects.get(pk=post_id)
+    if not post:
+        return HttpResponse(status=400)
+    return HttpResponse(status=204)
+    # TODO
+    # check in like table if post is present
+    # if not present, add new row with user id and post id
+    # if present, delete row
+
 
 def user_profile(request, user_id):
     try:

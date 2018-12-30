@@ -54,24 +54,7 @@
 
 
 {% for post in posts %}
-    <div id="post_{{post.pk}}" style="transition:all 1s ease">
-        <p class="post-title">
-            <a href="../post/{{ post.pk }}">{{ post.post_title }}</a>
-            {% if post.user_id.id == user.id %}
-                &nbsp &nbsp
-                <button onclick="delete_post({{ post.pk }})" class="iconbutton">
-                    <img src="{% static 'images/delete2.png' %}" width="16px" height="16px">
-                </button>
-            {% endif %}
-        </p>
-        <p class="post-username">
-            by <a href="../u/{{ post.user_id.id }}">{{ post.user_id.first_name }} {{ post.user_id.last_name }}</a>
-        </p>
-        <p class="post-timestamp">
-            <a href="../post/{{ post.pk }}"> published: {{ post.post_timestamp }} </a>
-        </p>
-        <p class="post-format">{{ post.post_text|safe }}</p>
-    </div>
+    {% include "./display_post.html" %}
 {% endfor %}
 
 

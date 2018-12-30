@@ -1,0 +1,29 @@
+{% load static %}
+
+<div id="post_{{post.pk}}" style="transition:all 1s ease">
+    <p class="post-title">
+        <a href="../post/{{ post.pk }}">{{ post.post_title }}</a>
+
+        <button onclick="like_post({{ post.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
+            <img id="like_{{post.pk}}" src="{% static 'images/like_button.png' %}" width="12px" height="12px">
+        </button>
+    </p>
+    <p class="post-username">
+        by <a href="../u/{{ post.user_id.id }}">{{ post.user_id.first_name }} {{ post.user_id.last_name }}</a>
+        <! check if the user is friends -->
+        <button class="iconbutton" style="margin-left:5px">
+            <img src="{% static 'images/add.png' %}" width="12px" height="12px">
+        </button>
+    </p>
+    <p class="post-timestamp">
+        <a href="../post/{{ post.pk }}"> published: {{ post.post_timestamp }} </a>
+    </p>
+    <p class="post-format">{{ post.post_text|safe }}</p>
+    {% if post.user_id.id == user.id %}
+
+        <button onclick="delete_post({{ post.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
+            <img src="{% static 'images/delete2.png' %}" width="12px" height="12px">
+        </button>
+    {% endif %}
+    <hr/>
+</div>

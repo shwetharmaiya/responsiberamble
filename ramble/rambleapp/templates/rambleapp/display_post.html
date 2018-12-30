@@ -10,9 +10,9 @@
     </p>
     <p class="post-username">
         by <a href="../u/{{ post.user_id.id }}">{{ post.user_id.first_name }} {{ post.user_id.last_name }}</a>
-        <! check if the user is friends -->
-        <button class="iconbutton" style="margin-left:5px">
-            <img src="{% static 'images/add.png' %}" width="12px" height="12px">
+        <! check if the user follows TODO -->
+        <button class="iconbutton" onclick="follow_user({{ post.user_id.id }})" style="margin-left:5px">
+            <img id="useradd_{{ post.user_id.id }}" src="{% static 'images/follow.png' %}" width="12px" height="12px">
         </button>
     </p>
     <p class="post-timestamp">

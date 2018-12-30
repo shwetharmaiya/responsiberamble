@@ -31,7 +31,7 @@ def post_ramble(request):
     new_post = Post(user_id=user, post_text=post_text, post_title=post_title)
     new_post.save()
     pk = new_post.pk
-    #return HttpResponse(status=204)
+    # return HttpResponse(status=204)
     return HttpResponse(pk)
 
 
@@ -48,6 +48,7 @@ def delete_post(request):
     else:
         return HttpResponse(status=400)
 
+
 @login_required
 def like_post(request):
     user = Auth_User.objects.get(pk=request.user.id)
@@ -60,6 +61,19 @@ def like_post(request):
     # check in like table if post is present
     # if not present, add new row with user id and post id
     # if present, delete row
+
+
+@login_required
+def follow_user(request):
+    follower = Auth_User.objects.get(pk=request.user.id)
+    followee_id = request.POST['user_id']
+    followee = Auth_User.objects.get(pk=followee_id)
+    if not follower or not followee:
+        return HttpResponse(status=400)
+    return HttpResponse(204)
+    # TODO
+    # check in followers table if the following relationship exists.
+    # if it does, delete record. If not, add relationship.
 
 
 def user_profile(request, user_id):

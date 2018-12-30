@@ -76,6 +76,38 @@
 
     }
 
+    function follow_user(user_id)
+    {
+        if (document.getElementById("useradd_"+user_id).src.endsWith("{% static 'images/follows.png' %}"))
+        {
+            console.log("unfollowing...");
+            document.getElementById("useradd_"+user_id).src = "{% static 'images/follow.png' %}";
+        }
+        else
+        {
+            console.log("following...");
+            document.getElementById("useradd_"+user_id).src = "{% static 'images/follows.png' %}";
+        }
+
+        data = {
+            user_id: user_id,
+        }
+        var ajax = new XMLHttpRequest()
+        ajax.open("POST", "followuser")
+        ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+        ajax.onreadystatechange = function(response)
+        {
+            console.log(response, this.status, this.readyState)
+        }
+
+        var formData = new FormData()
+        for(var i in data)
+            formData.append(i, data[i]);
+
+        ajax.send(formData)
+
+    }
+
 
     </script>
 </head>

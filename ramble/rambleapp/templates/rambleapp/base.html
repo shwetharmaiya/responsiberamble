@@ -22,7 +22,7 @@
             post_id: post_id,
         }
         var ajax = new XMLHttpRequest()
-        ajax.open("POST", "deletepost")
+        ajax.open("POST", "{% url 'delete_a_ramble' %}")
         ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
         ajax.onreadystatechange = function(response)
         {
@@ -61,7 +61,7 @@
             post_id: post_id,
         }
         var ajax = new XMLHttpRequest()
-        ajax.open("POST", "likepost")
+        ajax.open("POST", "{% url 'like_a_ramble' %}")
         ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
         ajax.onreadystatechange = function(response)
         {
@@ -93,7 +93,7 @@
             user_id: user_id,
         }
         var ajax = new XMLHttpRequest()
-        ajax.open("POST", "followuser")
+        ajax.open("POST", "{% url 'follow_a_user' %}")
         ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
         ajax.onreadystatechange = function(response)
         {

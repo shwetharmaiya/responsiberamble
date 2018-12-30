@@ -47,8 +47,9 @@
     function like_post(post_id)
     {
         var post_div = document.getElementById("post_"+post_id);
-        if (document.getElementById("like_"+post_id).src == "{% static 'images/liked_button.png' %}")
+        if (document.getElementById("like_"+post_id).src.endsWith("{% static 'images/liked_button.png' %}"))
         {
+            console.log("unliking...");
             document.getElementById("like_"+post_id).src = "{% static 'images/like_button.png' %}";
         }
         else

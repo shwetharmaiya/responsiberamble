@@ -11,16 +11,77 @@ from social_django.models import UserSocialAuth
 from .models import Post, Like, Follow
 from django.contrib.auth.models import User as Auth_User
 
+# Pages
+
 
 @login_required
 def index(request):
+    user = Auth_User.objects.get(pk=request.user.id)
     template = loader.get_template('rambleapp/index.html')
 
     # get all previous posts
     posts = Post.objects.all().order_by('-post_timestamp')
 
-    context = {'posts': posts}
+    user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
+    context = {'posts': posts, 'user_liked_posts': user_liked_posts}
     return HttpResponse(template.render(context, request))
+
+
+def user_profile(request, user_id):
+    # TODO fix the case when user isn't logged in.
+    user = Auth_User.objects.get(pk=request.user.id)
+    try:
+        profile_user = Auth_User.objects.get(pk=user_id)
+    except Auth_User.DoesNotExist:
+        profile_user = None
+    if profile_user:
+        user_posts = Post.objects.filter(user_id=profile_user).order_by('-post_timestamp')
+        user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
+        context = {'profile_user': profile_user, 'posts': user_posts, 'user_liked_posts':user_liked_posts}
+    else:
+        context = {}
+
+    template = loader.get_template('rambleapp/user.html')
+    return HttpResponse(template.render(context, request))
+
+
+def get_ramblepost(request, post_id):
+    # TODO fix the case when user isn't logged in.
+    user = Auth_User.objects.get(pk=request.user.id)
+    user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
+    try:
+        post = Post.objects.get(pk=post_id)
+    except Post.DoesNotExist:
+        post = None
+    context = {'post': post, 'user_liked_posts': user_liked_posts}
+
+    template = loader.get_template('rambleapp/post.html')
+    return HttpResponse(template.render(context, request))
+
+
+def login(request):
+    user = request.user
+    try:
+        twitter_login = user.social_auth.get(provider='twitter')
+    except UserSocialAuth.DoesNotExist:
+        twitter_login = None
+    except AttributeError:
+        twitter_login = None
+    template = loader.get_template('rambleapp/login.html')
+
+    posts = Post.objects.all().order_by('-post_timestamp')
+
+    context = {'twitter_login': twitter_login, 'posts': posts}
+    return HttpResponse(template.render(context, request))
+
+
+@login_required
+def logout(request):
+    auth_logout(request)
+    return redirect('index')
+
+
+# Post Methods
 
 
 @login_required
@@ -86,6 +147,9 @@ def follow_user(request):
     follower_id = request.user.id
     followee_id = request.POST['user_id']
 
+    if follower_id == followee_id:
+        return HttpResponse(status=400)
+
     try:
         follower = Auth_User.objects.get(pk=follower_id)
         followee = Auth_User.objects.get(pk=followee_id)
@@ -102,52 +166,3 @@ def follow_user(request):
     # If not, add relationship.
     followship.delete()
     return HttpResponse(204)
-
-
-def user_profile(request, user_id):
-    try:
-        profile_user = Auth_User.objects.get(pk=user_id)
-    except Auth_User.DoesNotExist:
-        profile_user = None
-    if profile_user:
-        user_posts = Post.objects.filter(user_id=profile_user).order_by('-post_timestamp')
-        context = {'profile_user': profile_user, 'posts': user_posts}
-    else:
-      context = {}
-
-    template = loader.get_template('rambleapp/user.html')
-    return HttpResponse(template.render(context, request))
-
-
-def login(request):
-    user = request.user
-    try:
-        twitter_login = user.social_auth.get(provider='twitter')
-    except UserSocialAuth.DoesNotExist:
-        twitter_login = None
-    except AttributeError:
-        twitter_login = None
-    template = loader.get_template('rambleapp/login.html')
-
-    posts = Post.objects.all().order_by('-post_timestamp')
-
-    context = {'twitter_login': twitter_login, 'posts': posts}
-    return HttpResponse(template.render(context, request))
-
-
-def logout(request):
-    auth_logout(request)
-    return redirect('index')
-
-
-def get_ramblepost(request, post_id):
-    try:
-        post = Post.objects.get(pk=post_id)
-    except Post.DoesNotExist:
-        post = None
-    context = {'post': post}
-
-    template = loader.get_template('rambleapp/post.html')
-    return HttpResponse(template.render(context, request))
-
-

@@ -6,6 +6,7 @@ from datetime import datetime
 
 # Create your models here.
 
+
 class Post(models.Model):
     user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
     post_timestamp = models.DateTimeField(default=datetime.now)
@@ -14,6 +15,8 @@ class Post(models.Model):
 
 
 class Like(models.Model):
+    class Meta:
+        unique_together = (('user_id', 'post_id'),)
     user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
 
@@ -27,3 +30,12 @@ class Comment(models.Model):
     user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
     comment_text = models.CharField(max_length=1000)
+
+
+class Follow(models.Model):
+    class Meta:
+        unique_together = (('follower_id', 'followee_id'),)
+    follower_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE, related_name="followee_id")
+    followee_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE, related_name="follower_id")
+
+

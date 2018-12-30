@@ -8,7 +8,7 @@ from django.contrib.auth import logout as auth_logout
 
 from social_django.models import UserSocialAuth
 
-from .models import Post
+from .models import Post, Like, Follow
 from django.contrib.auth.models import User as Auth_User
 
 
@@ -51,29 +51,57 @@ def delete_post(request):
 
 @login_required
 def like_post(request):
-    user = Auth_User.objects.get(pk=request.user.id)
-    post_id = request.POST['post_id']
-    post = Post.objects.get(pk=post_id)
-    if not post:
+    user_id = request.user.id
+    user = None
+    post = None
+    try:
+        user = Auth_User.objects.get(pk=user_id)
+    except Auth_User.DoesNotExist:
         return HttpResponse(status=400)
-    return HttpResponse(status=204)
-    # TODO
+    post_id = request.POST['post_id']
+    try:
+        post = Post.objects.get(pk=post_id)
+    except Post.DoesNotExist:
+        return HttpResponse(status=400)
+
+    if not user or not post:
+        return HttpResponse(status=400)
+
     # check in like table if post is present
-    # if not present, add new row with user id and post id
+    try:
+        like = Like.objects.get(user_id=user, post_id=post)
+    except Like.DoesNotExist:
+        # if not present, add new row with user id and post id
+        new_like = Like(user_id=user, post_id=post)
+        new_like.save()
+        return HttpResponse(status=204)
+
     # if present, delete row
+    like.delete()
+    return HttpResponse(status=204)
 
 
 @login_required
 def follow_user(request):
-    follower = Auth_User.objects.get(pk=request.user.id)
+    follower_id = request.user.id
     followee_id = request.POST['user_id']
-    followee = Auth_User.objects.get(pk=followee_id)
-    if not follower or not followee:
+
+    try:
+        follower = Auth_User.objects.get(pk=follower_id)
+        followee = Auth_User.objects.get(pk=followee_id)
+    except Follow.DoesNotExist:
         return HttpResponse(status=400)
-    return HttpResponse(204)
-    # TODO
     # check in followers table if the following relationship exists.
-    # if it does, delete record. If not, add relationship.
+    try:
+        followship = Follow.objects.get(follower_id=follower, followee_id=followee)
+    except:
+        # if it does, delete record.
+        new_followship = Follow(follower_id=follower, followee_id=followee)
+        new_followship.save()
+        return HttpResponse(status=204)
+    # If not, add relationship.
+    followship.delete()
+    return HttpResponse(204)
 
 
 def user_profile(request, user_id):

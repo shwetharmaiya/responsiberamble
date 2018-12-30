@@ -23,21 +23,32 @@ def index(request):
     posts = Post.objects.all().order_by('-post_timestamp')
 
     user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
-    context = {'posts': posts, 'user_liked_posts': user_liked_posts}
+    user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
+    context = {'posts': posts, 'user_liked_posts': user_liked_posts, 'user_followers': user_followers}
     return HttpResponse(template.render(context, request))
 
 
 def user_profile(request, user_id):
-    # TODO fix the case when user isn't logged in.
-    user = Auth_User.objects.get(pk=request.user.id)
     try:
         profile_user = Auth_User.objects.get(pk=user_id)
     except Auth_User.DoesNotExist:
         profile_user = None
     if profile_user:
         user_posts = Post.objects.filter(user_id=profile_user).order_by('-post_timestamp')
-        user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
-        context = {'profile_user': profile_user, 'posts': user_posts, 'user_liked_posts':user_liked_posts}
+        context = {'profile_user': profile_user, 'posts': user_posts}
+        try:
+            twitter_login = request.user.social_auth.get(provider='twitter')
+        except UserSocialAuth.DoesNotExist:
+            twitter_login = None
+        except AttributeError:
+            twitter_login = None
+        if twitter_login:
+            user = Auth_User.objects.get(pk=request.user.id)
+            user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
+            user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
+
+            context['user_liked_posts'] = user_liked_posts
+            context['user_followers'] = user_followers
     else:
         context = {}
 
@@ -46,14 +57,25 @@ def user_profile(request, user_id):
 
 
 def get_ramblepost(request, post_id):
-    # TODO fix the case when user isn't logged in.
-    user = Auth_User.objects.get(pk=request.user.id)
-    user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
     try:
         post = Post.objects.get(pk=post_id)
+        context = {'post': post}
+        try:
+            twitter_login = request.user.social_auth.get(provider='twitter')
+        except UserSocialAuth.DoesNotExist:
+            twitter_login = None
+        except AttributeError:
+            twitter_login = None
+        if twitter_login:
+            user = Auth_User.objects.get(pk=request.user.id)
+            user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
+            user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
+
+            context['user_liked_posts'] = user_liked_posts
+            context['user_followers'] = user_followers
     except Post.DoesNotExist:
         post = None
-    context = {'post': post, 'user_liked_posts': user_liked_posts}
+        context = {}
 
     template = loader.get_template('rambleapp/post.html')
     return HttpResponse(template.render(context, request))
@@ -75,7 +97,6 @@ def login(request):
     return HttpResponse(template.render(context, request))
 
 
-@login_required
 def logout(request):
     auth_logout(request)
     return redirect('index')

@@ -1,7 +1,7 @@
 {% load static %}
 
-<div id="post_{{post.pk}}" style="transition:all 1s ease">
-    <p class="post-title">
+<div id="post_{{post.pk}}" style="transition:all 1s ease" class="post">
+    <div class="post-title">
         <a href="../post/{{ post.pk }}">{{ post.post_title }}</a>
 
         <button onclick="like_post({{ post.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
@@ -11,20 +11,18 @@
                 <img id="like_{{post.pk}}" src="{% static 'images/like_button.png' %}" width="12px" height="12px">
             {% endif %}
         </button>
-    </p>
-    <p class="post-username">
-        by <a href="../u/{{ post.user_id.id }}">{{ post.user_id.first_name }} {{ post.user_id.last_name }}</a>
-        <button class="iconbutton" onclick="follow_user({{ post.user_id.id }})" style="margin-left:5px">
+    </div>
+    <div class="post-username">
+       published: <a href="../post/{{ post.pk }}">{{ post.post_timestamp }} </a> by <a href="../u/{{ post.user_id.id }}">{{ post.user_id.first_name }} {{ post.user_id.last_name }}</a>
+        <button class="iconbutton" onclick="follow_user({{ post.user_id.id }})" style="margin-left:5px;padding:2px">
             {% if user_followers and post.user_id.id in user_followers %}
-                <img id="useradd_{{ post.user_id.id }}" src="{% static 'images/follows.png' %}" width="12px" height="12px">
+                <img id="useradd_{{ post.user_id.id }}" src="{% static 'images/follows.png' %}" width="10px" height="10px">
             {% else %}
-                <img id="useradd_{{ post.user_id.id }}" src="{% static 'images/follow.png' %}" width="12px" height="12px">
+                <img id="useradd_{{ post.user_id.id }}" src="{% static 'images/follow.png' %}" width="10px" height="10px">
             {% endif %}
         </button>
-    </p>
-    <p class="post-timestamp">
-        <a href="../post/{{ post.pk }}"> published: {{ post.post_timestamp }} </a>
-    </p>
+    </div>
+
     <p class="post-format">{{ post.post_text|safe }}</p>
     {% if post.user_id.id == user.id %}
 
@@ -32,5 +30,4 @@
             <img src="{% static 'images/delete2.png' %}" width="12px" height="12px">
         </button>
     {% endif %}
-    <hr/>
 </div>

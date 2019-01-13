@@ -1,54 +1,100 @@
-.header {
-    padding-left: 30px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    background: #000000;
-    color: white;
-    font-size: 20px;
-    font-family: sans-serif;
+html {
+	background: #fafafa;
+	font: 14px Georgia, serif;
 }
 
-.header a { text-decoration: none; color:white; }
+header, .header {
+	padding: 2px 30px 2px;
+	background: #212121;
+	color: #ff5131;
+	font: 20px Arial, sans-serif;
+	box-shadow: 0 0 9px #ffffff;
+}
+
+header a, .header a {
+	color: #ff5131;
+}
+
+a {
+	text-decoration: underline;
+	color: #424242;
+	}
+	
+a:hover {
+	color: #d50000;
+}
+
+main {
+	padding: 0 60px 0;
+}
+
+article, .post {
+	background: #ffffff;
+	padding: 6px 6px 6px 20px;
+	margin: 18px 0 18px;
+	border-radius: 2px;
+	box-shadow: 0 0 9px #c7c7c7;
+}
+
+article p, .article p {
+	margin: 6px 6px 0px;
+	line-height: 168%;
+}
 
 .post-title {
-    font-size: 24px;
-    font-family: Georgia;
+	margin-top: 6px;
+	font-size: 24px;
 }
-.post-text {
-    font-size: 18px;
-    font-family: Georgia;
-    line-height: 1.618;
+
+.post-format, .post-text {
+	margin-left: 18px;
+	font-size: 16px;
+	line-height: 1.618;
 }
 
 .post-username {
-    font-size: 14px;
-    font-family: Georgia
+	margin-left: 18px;
+    font-size: 12px;
 }
 
 .post-timestamp {
-    font-size: 8px;
-    font-family: Georgia
+	margin-left: 18px;
+	margin-right: 18px;
+    font-size: 12px;
 }
 
-a {text-decoration: underline; color:black; }
+.post-tools {
+	text-align: right;
+	margin: 0 -6px -6px -6px;
+	padding: 0 18px;
+	background: #eeeeee;
+	border-radius: 0 0 2px 2px;
+}
 
 .iconbutton {
     background:white;
     color:black;
     padding:0;
-    border-radius:50%;
 }
 
 button {
-background:black;
-color:white;
-border-radius:4px;
-padding:10px;
+	background: #1b1b1b;
+	color: #fafafa;
+	border-radius: 4px;
+	margin: 12px 0;
+	padding: 6px 12px;
 }
 
-
 table {
-color:inherit;
-width:100%;
-padding:0;
+	color:inherit;
+	width:100%;
+	padding:0;
+}
+
+.iconbutton {
+    background: #fafafa;
+    color: #212121;
+    padding: 6px;
+	margin: 5px 0px 5px 5px;
+    border-radius: 50%;
 }

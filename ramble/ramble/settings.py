@@ -15,6 +15,8 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+USER_DIR = os.path.abspath(os.path.join(os.path.pardir(BASE_DIR), 'userdata'))
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -25,7 +27,7 @@ SECRET_KEY = '!gw*9u^uy%$1d)jh=e5#cd9k9^q9g6a9#llzitr=5ez3bzmg7b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '111.222.333.444', 'www.ramble.today']
 
 
 # Application definition

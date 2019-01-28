@@ -12,6 +12,7 @@ urlpatterns = [
   path('deletepost', views.delete_post, name='delete_a_ramble'),
   path('likepost', views.like_post, name='like_a_ramble'),
   path('followuser', views.follow_user, name='follow_a_user'),
+  path('make_profile', views.make_profile, name='edit_your_profile'),
   path('login', views.login, name='login'),
   path('logout', views.logout, name='logout'),
   # path('accounts/login/', views.login, name='sociallogin'),

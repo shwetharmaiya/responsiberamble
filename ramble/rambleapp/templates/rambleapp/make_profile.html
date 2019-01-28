@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ramble | Make Your Profile</title>
+</head>
+<body>
+    {% csrf_token %}
+    What's your name?
+    <input type="text" id="user_full_name" name="user_full_name" maxlength="50" minlength="3"
+           placeholder="{{ user.first_name }} {{user.last_name}}"/>
+    <br>
+    Upload a picture
+    <button > <img src="{% static 'images/default_dog.jpg' %}" width="64px"> </button>
+    <br>
+    Tell us about yourself...
+    <textarea name="bio text" style="width:250px;height:150px;"></textarea>
+    <br>
+    <button>I'm ready to go! </button>
+
+</body>
+</html>

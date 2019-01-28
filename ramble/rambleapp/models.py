@@ -1,10 +1,19 @@
+import os
 from django.db import models
 
 from django.contrib.auth.models import User as Auth_User
 
 from datetime import datetime
+import ramble.settings as settings
 
 # Create your models here.
+
+
+class Profile(models.Model):
+    user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=50)
+    profile_pic = models.ImageField(upload_to='profilepix/')
+    bio = models.CharField(max_length=150)
 
 
 class Post(models.Model):

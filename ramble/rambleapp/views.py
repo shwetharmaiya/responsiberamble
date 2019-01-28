@@ -8,7 +8,7 @@ from django.contrib.auth import logout as auth_logout
 
 from social_django.models import UserSocialAuth
 
-from .models import Post, Like, Follow
+from .models import Post, Like, Follow, Profile
 from django.contrib.auth.models import User as Auth_User
 
 # Pages
@@ -17,6 +17,12 @@ from django.contrib.auth.models import User as Auth_User
 @login_required
 def index(request):
     user = Auth_User.objects.get(pk=request.user.id)
+
+    try:
+        profile = Profile.objects.get(user_id=request.user.id)
+    except Profile.DoesNotExist:
+       return redirect(make_profile)
+
     template = loader.get_template('rambleapp/index.html')
 
     # get all previous posts
@@ -25,6 +31,13 @@ def index(request):
     user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
     user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
     context = {'posts': posts, 'user_liked_posts': user_liked_posts, 'user_followers': user_followers}
+    return HttpResponse(template.render(context, request))
+
+@login_required
+def make_profile(request):
+    user = Auth_User.objects.get(pk=request.user.id)
+    template = loader.get_template('rambleapp/make_profile.html')
+    context = {}
     return HttpResponse(template.render(context, request))
 
 

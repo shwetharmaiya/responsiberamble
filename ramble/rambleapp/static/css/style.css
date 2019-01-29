@@ -98,3 +98,8 @@ table {
 	margin: 5px 0px 5px 5px;
     border-radius: 50%;
 }
+
+.imgupload > input
+{
+    display: none;
+}

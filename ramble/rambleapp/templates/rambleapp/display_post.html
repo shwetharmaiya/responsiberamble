@@ -23,7 +23,11 @@
         </button>
     </div>
 
+    <div id="post_txt_{{post.pk}}" style="max-height:100px;overflow:hidden">
     <p class="post-format">{{ post.post_text|safe }}</p>
+    </div>
+    <a href="../post/{{ post.pk }}" id="more_link_{{post.pk}}"
+    style="display:none">More...</a>
     {% if post.user_id.id == user.id %}
 
         <button onclick="delete_post({{ post.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
@@ -31,3 +35,13 @@
         </button>
     {% endif %}
 </div>
+
+<script>
+    var div = document.getElementById("post_txt_{{post.pk}}")
+    if ( "{{ request.path }}".startsWith("/post/")) {
+        div.style.maxHeight = "none"
+    } else if (div.scrollHeight > div.clientHeight) {
+        var anchor = document.getElementById("more_link_{{post.pk}}")
+        anchor.style.display = "block"
+    }
+</script>

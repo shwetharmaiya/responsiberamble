@@ -126,11 +126,12 @@
                 <!--<p style="margin-left:60px"> Read, Write, Curate</p>-->
             </td>
             <td style="text-align:right">
-                {% if user.username %}
+                {% if user %}
                     <div style="text-align:right; font-size:small">
                         <p>
-                            Hello <a href="../u/{{ user.id }}"> {{ user.first_name }}! </a>
+                            Hello <a href="../u/{{ user.id }}"> {{ user_profile.full_name }}! </a>
                             &nbsp; &nbsp;
+                            <img src="{{ user_profile.profile_pic.url }}" width="20px"/>
                             <a href="{% url 'logout' %}"><button style="font-size:small">Logout</button></a>
                          </p>
                     </div>

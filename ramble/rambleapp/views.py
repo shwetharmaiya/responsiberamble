@@ -30,7 +30,8 @@ def index(request):
 
     user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
     user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
-    context = {'posts': posts, 'user_liked_posts': user_liked_posts, 'user_followers': user_followers, 'user:profile': user_profile}
+    context = {'posts': posts, 'user_liked_posts': user_liked_posts,
+               'user_followers': user_followers, 'user_profile': user_profile}
     return HttpResponse(template.render(context, request))
 
 

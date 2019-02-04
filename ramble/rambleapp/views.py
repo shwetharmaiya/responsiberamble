@@ -55,23 +55,24 @@ def get_user_profile(request, user_id):
     if profile_user:
         user_posts = Post.objects.filter(user_id=profile_user).order_by('-post_timestamp')
         context = {'profile_user': profile_user, 'posts': user_posts}
-        try:
-            twitter_login = request.user.social_auth.get(provider='twitter')
-        except UserSocialAuth.DoesNotExist:
-            twitter_login = None
-        except AttributeError:
-            twitter_login = None
-        if twitter_login:
-            user = Auth_User.objects.get(pk=request.user.id)
-            user_profile = Profile.objects.get(user_id=request.user.id)
-            user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
-            user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
-
-            context['user_liked_posts'] = user_liked_posts
-            context['user_followers'] = user_followers
-            context['user_profile'] = user_profile
     else:
         context = {}
+
+    try:
+        twitter_login = request.user.social_auth.get(provider='twitter')
+    except UserSocialAuth.DoesNotExist:
+        twitter_login = None
+    except AttributeError:
+        twitter_login = None
+    if twitter_login:
+        user = Auth_User.objects.get(pk=request.user.id)
+        user_profile = Profile.objects.get(user_id=request.user.id)
+        user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
+        user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
+
+        context['user_liked_posts'] = user_liked_posts
+        context['user_followers'] = user_followers
+        context['user_profile'] = user_profile
 
     template = loader.get_template('rambleapp/user.html')
     return HttpResponse(template.render(context, request))
@@ -81,24 +82,24 @@ def get_ramblepost(request, post_id):
     try:
         post = Post.objects.get(pk=post_id)
         context = {'post': post}
-        try:
-            twitter_login = request.user.social_auth.get(provider='twitter')
-        except UserSocialAuth.DoesNotExist:
-            twitter_login = None
-        except AttributeError:
-            twitter_login = None
-        if twitter_login:
-            user = Auth_User.objects.get(pk=request.user.id)
-            user_profile = Profile.objects.get(user_id=request.user.id)
-            user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
-            user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
-
-            context['user_liked_posts'] = user_liked_posts
-            context['user_followers'] = user_followers
-            context['user_profile'] = user_profile
     except Post.DoesNotExist:
         post = None
         context = {}
+    try:
+        twitter_login = request.user.social_auth.get(provider='twitter')
+    except UserSocialAuth.DoesNotExist:
+        twitter_login = None
+    except AttributeError:
+        twitter_login = None
+    if twitter_login:
+        user = Auth_User.objects.get(pk=request.user.id)
+        user_profile = Profile.objects.get(user_id=request.user.id)
+        user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
+        user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
+
+        context['user_liked_posts'] = user_liked_posts
+        context['user_followers'] = user_followers
+        context['user_profile'] = user_profile
 
     template = loader.get_template('rambleapp/post.html')
     return HttpResponse(template.render(context, request))

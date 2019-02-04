@@ -126,7 +126,7 @@
                 <!--<p style="margin-left:60px"> Read, Write, Curate</p>-->
             </td>
             <td style="text-align:right">
-                {% if user %}
+                {% if user.username %}
                     <div style="text-align:right; font-size:small">
                         <p>
                             Hello <a href="../u/{{ user.id }}"> {{ user_profile.full_name }}! </a>

@@ -54,7 +54,9 @@ def get_user_profile(request, user_id):
         profile_user = None
     if profile_user:
         user_posts = Post.objects.filter(user_id=profile_user).order_by('-post_timestamp')
-        context = {'profile_user': profile_user, 'posts': user_posts}
+        profile_user_profile = Profile.objects.get(user_id=request.user.id)
+        context = {'profile_user': profile_user, 'posts': user_posts,
+                   'profile_user_profile': profile_user_profile}
     else:
         context = {}
 

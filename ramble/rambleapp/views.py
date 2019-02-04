@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 
 # Create your views here.
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.template import loader
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
@@ -9,6 +9,7 @@ from django.contrib.auth import logout as auth_logout
 from social_django.models import UserSocialAuth
 
 from .models import Post, Like, Follow, Profile
+from .forms import ProfileForm
 from django.contrib.auth.models import User as Auth_User
 
 # Pages
@@ -17,11 +18,10 @@ from django.contrib.auth.models import User as Auth_User
 @login_required
 def index(request):
     user = Auth_User.objects.get(pk=request.user.id)
-
     try:
-        profile = Profile.objects.get(user_id=request.user.id)
+        user_profile = Profile.objects.get(user_id=request.user.id)
     except Profile.DoesNotExist:
-       return redirect(make_profile)
+        return redirect(make_profile)
 
     template = loader.get_template('rambleapp/index.html')
 
@@ -30,18 +30,23 @@ def index(request):
 
     user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
     user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
-    context = {'posts': posts, 'user_liked_posts': user_liked_posts, 'user_followers': user_followers}
+    context = {'posts': posts, 'user_liked_posts': user_liked_posts, 'user_followers': user_followers, 'user:profile': user_profile}
     return HttpResponse(template.render(context, request))
+
 
 @login_required
 def make_profile(request):
-    user = Auth_User.objects.get(pk=request.user.id)
-    template = loader.get_template('rambleapp/make_profile.html')
-    context = {}
-    return HttpResponse(template.render(context, request))
+    try:
+        profile = Profile.objects.get(user_id=request.user.id)
+        return redirect(index)
+    except Profile.DoesNotExist:
+        form = ProfileForm(request.POST, request.FILES)
+        template = loader.get_template('rambleapp/make_profile.html')
+        context = {'form': form}
+        return HttpResponse(template.render(context, request))
 
 
-def user_profile(request, user_id):
+def get_user_profile(request, user_id):
     try:
         profile_user = Auth_User.objects.get(pk=user_id)
     except Auth_User.DoesNotExist:
@@ -57,11 +62,13 @@ def user_profile(request, user_id):
             twitter_login = None
         if twitter_login:
             user = Auth_User.objects.get(pk=request.user.id)
+            user_profile = Profile.objects.get(user_id=request.user.id)
             user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
             user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
 
             context['user_liked_posts'] = user_liked_posts
             context['user_followers'] = user_followers
+            context['user_profile'] = user_profile
     else:
         context = {}
 
@@ -81,11 +88,13 @@ def get_ramblepost(request, post_id):
             twitter_login = None
         if twitter_login:
             user = Auth_User.objects.get(pk=request.user.id)
+            user_profile = Profile.objects.get(user_id=request.user.id)
             user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
             user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
 
             context['user_liked_posts'] = user_liked_posts
             context['user_followers'] = user_followers
+            context['user_profile'] = user_profile
     except Post.DoesNotExist:
         post = None
         context = {}
@@ -128,6 +137,27 @@ def post_ramble(request):
     pk = new_post.pk
     # return HttpResponse(status=204)
     return HttpResponse(pk)
+
+
+@login_required
+def post_profile(request):
+    print(request)
+    if request.method == 'POST':
+        print("Request method is post")
+        user = Auth_User.objects.get(pk=request.user.id)
+        form = ProfileForm(request.POST, request.FILES)
+        print(form)
+        if form.is_valid():
+            new_profile = form.save(commit=False)
+            new_profile.user_id = user
+            # bio = form.cleaned_data['bio']
+            # fullname = form.cleaned_data['fullname']
+            # new_profile = Profile(user_id=user, profile_pic=pic, bio=bio, full_name=fullname)
+            new_profile.save()
+            return redirect('index')
+        else:
+            return HttpResponse("FUCK, form is invalid" + str(form.errors))
+    return HttpResponseForbidden('allowed only via POST')
 
 
 @login_required

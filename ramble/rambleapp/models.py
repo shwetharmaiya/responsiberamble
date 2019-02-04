@@ -10,7 +10,7 @@ import ramble.settings as settings
 
 
 class Profile(models.Model):
-    user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
+    user_id = models.OneToOneField(Auth_User, on_delete=models.CASCADE, unique=True)
     full_name = models.CharField(max_length=50)
     profile_pic = models.ImageField(upload_to='profilepix/')
     bio = models.CharField(max_length=150)

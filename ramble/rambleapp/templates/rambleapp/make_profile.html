@@ -6,6 +6,12 @@
 <div style="text-align:center">
     <div style="width:50%;background-color:white;margin:auto;padding:50px">
         <p style="font-size:25px"> Let's fill out your profile</p>
+        <form method="POST" class="post-form" action="{% url 'post_profile' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Ready To Ramble</button>
+        </form>
+        <!--
         <div class="imgupload" align="center">
             <label for="file-input">
                 <img src="{% static 'images/upload.png' %}" width="200"/>
@@ -27,6 +33,7 @@
         <div align="right">
             <button id="submit_profile">Ready To Ramble!</button>
         </div>
+        -->
     </div>
 </div>
 

@@ -7,19 +7,39 @@
 			function keypressed(event) {
 				console.log(event)
 				if (event.keyCode == 13) {
-					alert("Boo!")
+					var entered_email = document.getElementById("email_sub");
+					 data = {
+            			email: entered_email,
+        			}
+        		var ajax = new XMLHttpRequest()
+        		ajax.open("POST", "{% url 'subscribe_email' %}")
+        		ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+        		ajax.onreadystatechange = function(response)
+		        {
+		            console.log(response, this.status, this.readyState)
+
+		            if (this.readyState == 4) {
+		                email_div.innerHTML = "Thank you! We will keep you updated on Ramble's progress!"
+		            }
+		        }
+        		var formData = new FormData()
+        		for(var i in data)
+            		formData.append(i, data[i]);
+        		ajax.send(formData)
 				}
 			}
 		</script>
 	</head>
-	<body style="background-image: url({% static 'images/landing_page_bkg.jpg' %}); text-align: center;background-position: center;background-size: cover;font-size: 30px ">
+	<body style="background-image: url({% static 'images/landing_page_bkg.jpg' %}); text-align: center;background-position: center;background-size: cover;font-size: 30px;color:white; ">
 		<div style='margin-top:20vh;margin-bottom: 20px; color:white;'>
 			<img src="{% static 'images/ramble2_transparent.png' %}">
 			<p> A one-stop shop for the writing community </p>
 			<p> Coming soon.... </p>
 		</div>
-		<input type='email' placeholder="Subscribe" onkeypress="keypressed(event)" 
+		<div id='email_div'>
+			<input id='email_sub' type='email' placeholder="Subscribe" onkeypress="keypressed(event)" 
 		style="background-image: url({% static 'images/email.png' %}); background-color:rgba(50,50,50,0.75);
 padding-left:0px;background-size:contain; background-repeat: no-repeat; background-position: right; font-size:inherit; text-align: center; color:white;padding:5px">
+		</div>
 	</body>
 </html>

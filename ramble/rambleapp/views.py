@@ -8,7 +8,7 @@ from django.contrib.auth import logout as auth_logout
 
 from social_django.models import UserSocialAuth
 
-from .models import Post, Like, Follow, Profile
+from .models import Post, Like, Follow, Profile, InterestedUsers
 from .forms import ProfileForm
 from django.contrib.auth.models import User as Auth_User
 
@@ -18,6 +18,17 @@ def landing_page(request):
     template = loader.get_template('rambleapp/landing_page.html')
     context = {}
     return HttpResponse(template.render(context, request))
+
+def post_email(request):
+    if request.POST:
+        email = request.POST['email']
+        try:
+            emailobj = InterestedUsers.objects.get(email_id=email)
+        except InterestedUsers.DoesNotExist:
+            new_interested_user = InterestedUsers(email_id=email)
+            new_interested_user.save()
+        return HttpResponse(204)
+    return HttpResponseForbidden("Allowed Only Via Post")
 
 @login_required
 def index(request):

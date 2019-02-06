@@ -18,6 +18,7 @@ urlpatterns = [
   path('post_profile', views.post_profile, name='post_profile'),
   path('login', views.login, name='login'),
   path('logout', views.logout, name='logout'),
+  path('landing_page', views.landing_page, name='landing_page'),
   # path('accounts/login/', views.login, name='sociallogin'),
   url(r'^oauth/', include('social_django.urls', namespace='social')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

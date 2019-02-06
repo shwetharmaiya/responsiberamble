@@ -14,6 +14,10 @@ from django.contrib.auth.models import User as Auth_User
 
 # Pages
 
+def landing_page(request):
+    template = loader.get_template('rambleapp/landing_page.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
 
 @login_required
 def index(request):

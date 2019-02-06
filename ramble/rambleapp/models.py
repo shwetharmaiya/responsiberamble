@@ -8,6 +8,11 @@ import ramble.settings as settings
 
 # Create your models here.
 
+class InterestedUsers(models.Model):
+    name = models.CharField(max_length=100)
+    email_id = models.CharField(max_length=50)
+    signedup_timestamp = models.DateTimeField(default=datetime.now)
+
 
 class Profile(models.Model):
     user_id = models.OneToOneField(Auth_User, on_delete=models.CASCADE, unique=True)

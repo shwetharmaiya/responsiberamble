@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Profile
+from .models import Profile, InterestedUsers
 
 
 class ProfileForm(forms.ModelForm):
@@ -10,4 +10,5 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         exclude = ['user_id']
+
 

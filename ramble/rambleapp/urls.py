@@ -9,13 +9,19 @@ urlpatterns = [
   path('', views.index, name='index'),
   # path('accounts/profile/', views.index, name='index'),
   path('u/<int:user_id>', views.get_user_profile, name='user_profile'),
+  path('u/<int:user_id>/likes', views.get_user_profile_likes, name='user_profile_likes'),
+  path('u/<int:user_id>/follows', views.get_user_profile_follows, name='user_profile_follows'),
+  path('u/<int:user_id>/followers', views.get_user_profile_followers, name='user_profile_followers'),
+
   path('post/<int:post_id>', views.get_ramblepost, name='post'),
   path('ramblepost', views.post_ramble, name='post_a_ramble'),
   path('deletepost', views.delete_post, name='delete_a_ramble'),
   path('likepost', views.like_post, name='like_a_ramble'),
   path('followuser', views.follow_user, name='follow_a_user'),
+
   path('make_profile', views.make_profile, name='edit_your_profile'),
   path('post_profile', views.post_profile, name='post_profile'),
+
   path('login', views.login, name='login'),
   path('logout', views.logout, name='logout'),
   path('landing_page', views.landing_page, name='landing_page'),

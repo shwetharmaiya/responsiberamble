@@ -2,7 +2,7 @@
 
 <div id="post_{{post.pk}}" style="transition:all 1s ease" class="post">
     <div class="post-title">
-        <a href="../post/{{ post.pk }}">{{ post.post_title }}</a>
+        <a href="/post/{{ post.pk }}">{{ post.post_title }}</a>
 
         <button onclick="like_post({{ post.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
             {% if user_liked_posts and post.pk in user_liked_posts %}
@@ -13,7 +13,7 @@
         </button>
     </div>
     <div class="post-username">
-       published: <a href="../post/{{ post.pk }}">{{ post.post_timestamp | timesince}} </a> ago by <a href="../u/{{ post.user_id.id }}">{{ post.user_id.first_name }} {{ post.user_id.last_name }}</a>
+       published: <a href="/post/{{ post.pk }}">{{ post.post_timestamp | timesince}} </a> ago by <a href="../u/{{ post.user_id.id }}">{{ post.user_id.first_name }} {{ post.user_id.last_name }}</a>
         <button class="iconbutton" onclick="follow_user({{ post.user_id.id }})" style="margin-left:5px;padding:2px">
             {% if user_followers and post.user_id.id in user_followers %}
                 <img id="useradd_{{ post.user_id.id }}" src="{% static 'images/follows.png' %}" width="10px" height="10px">
@@ -26,7 +26,7 @@
     <div id="post_txt_{{post.pk}}" style="max-height:100px;overflow:hidden">
     <p class="post-format">{{ post.post_text|safe }}</p>
     </div>
-    <a href="../post/{{ post.pk }}" id="more_link_{{post.pk}}"
+    <a href="/post/{{ post.pk }}" id="more_link_{{post.pk}}"
     style="display:none">More...</a>
     {% if post.user_id.id == user.id %}
 

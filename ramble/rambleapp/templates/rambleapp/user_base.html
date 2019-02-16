@@ -12,7 +12,7 @@
     <p> 404 User Not Found</p>
 {% endif %}
 
-{% for post in posts %}
-     {% include "./display_post.html" %}
-{% endfor %}
+	{% block subcontent %}
+	{% endblock subcontent %}
+
 {% endblock %}

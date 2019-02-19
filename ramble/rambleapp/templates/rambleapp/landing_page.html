@@ -9,7 +9,7 @@
 				if (event.keyCode == 13) {
 					var entered_email = document.getElementById("email_sub");
 					 data = {
-            			email: entered_email,
+            			email: entered_email.value,
         			}
         		var ajax = new XMLHttpRequest()
         		ajax.open("POST", "{% url 'subscribe_email' %}")

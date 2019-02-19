@@ -255,6 +255,13 @@ def logout(request):
 @login_required
 def post_ramble(request):
     post_text = request.POST['new_ramble_post']
+    # process post text 
+    BLANK_LINE = '<p>&nbsp;</p>'
+    broken_lines = post_text.split(BLANK_LINE)
+    broken_lines = [line for line in broken_lines if not line.isspace() and line != '' ]
+
+    post_text = BLANK_LINE.join(broken_lines)
+
     post_title = request.POST['new_ramble_title']
     user = Auth_User.objects.get(pk=request.user.id)
     new_post = Post(user_id=user, post_text=post_text, post_title=post_title)

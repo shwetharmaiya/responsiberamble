@@ -1,10 +1,13 @@
 import os
-from django.db import models
+from datetime import datetime
 
+from django.db import models
 from django.contrib.auth.models import User as Auth_User
 
-from datetime import datetime
+from taggit.managers import TaggableManager
+
 import ramble.settings as settings
+
 
 # Create your models here.
 
@@ -25,6 +28,7 @@ class Post(models.Model):
     post_timestamp = models.DateTimeField(default=datetime.now)
     post_title = models.CharField(max_length=100)
     post_text = models.CharField(max_length=10000)
+    tags = TaggableManager()
 
 
 class Like(models.Model):

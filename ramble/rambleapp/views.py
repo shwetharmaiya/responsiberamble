@@ -263,9 +263,22 @@ def post_ramble(request):
     post_text = BLANK_LINE.join(broken_lines)
 
     post_title = request.POST['new_ramble_title']
+    post_tags = request.POST['new_ramble_tags']
+    if not post_tags:
+        post_tags = 'uncategorized, other random stuff'
     user = Auth_User.objects.get(pk=request.user.id)
+
     new_post = Post(user_id=user, post_text=post_text, post_title=post_title)
     new_post.save()
+    # This is a many to many model, so you need to save it first, 
+    # so it has a primary key
+    # then you add tags to it using the add method. 
+    # and save it again. 
+    tagslist = [str(r) for r in post_tags.split(',')]
+
+    new_post.tags.add(*tagslist)
+    new_post.save()
+
     pk = new_post.pk
     # return HttpResponse(status=204)
     return HttpResponse(pk)

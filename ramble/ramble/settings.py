@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '111.222.333.444', 'www.ramble.today'
 
 INSTALLED_APPS = [
     'social_django',
+    'taggit',
     'rambleapp.apps.RambleappConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -121,6 +122,8 @@ SOCIAL_AUTH_TWITTER_SECRET = 'AyzkT2Osys7znbFVfNnarpUVvLDH2DAwNgYJu0xVOi7WLxK5hi
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_URL = 'logout'
+
+TAGGIT_CASE_INSENSITIVE = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/

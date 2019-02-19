@@ -74,7 +74,8 @@
 
         data = {
             new_ramble_title: new_ramble_title.value,
-            new_ramble_post: tinyMCE.activeEditor.getContent()
+            new_ramble_post: tinyMCE.activeEditor.getContent(),
+            new_ramble_tags: new_ramble_tags.value
         }
 
             var ajax = new XMLHttpRequest()
@@ -122,6 +123,10 @@
         <textarea id="new_ramble_post" name="new_ramble_post" maxlength="10000" placeholder="Tell your story..."
               style="width:100%;height:40vh;margin-bottom:10px"
         ></textarea>
+        <p style='text-align:left'> Add tags for your post below, separating each tag with a comma. </p>
+        <input type="text" id="new_ramble_tags", name="new_ramble_tags" maxlength="40" placeholder="Uncategorized"
+        style="width:100%">
+        <br>
         <button onclick="submit_ramble()"> Ramble </button>
     </div>
 

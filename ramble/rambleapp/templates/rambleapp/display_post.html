@@ -26,6 +26,14 @@
         </button>
     </div>
 
+    {% if post.tags %}
+        <div class='post-tags'>
+            {% for tag in post.tags.all %}
+                <div class='post-tag'> {{ tag }} </div>
+            {% endfor %}
+        </div>
+    {% endif%}
+
     <div id="post_txt_{{post.pk}}" style="max-height:100px;overflow:hidden">
     <p class="post-format">{{ post.post_text|safe }}</p>
     </div>

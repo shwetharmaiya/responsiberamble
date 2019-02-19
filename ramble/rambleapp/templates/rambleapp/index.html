@@ -53,7 +53,7 @@
     </div>
 
 
-{% for post in posts %}
+{% for post, num_likes in posts_and_likes %}
     {% include "./display_post.html" %}
 {% endfor %}
 

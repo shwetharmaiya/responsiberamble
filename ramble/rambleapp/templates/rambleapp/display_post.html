@@ -11,6 +11,9 @@
                 <img id="like_{{post.pk}}" src="{% static 'images/like_button.png' %}" width="12px" height="12px">
             {% endif %}
         </button>
+        {% if num_likes > 0 %}
+            <a href='javascript:void(0)' onclick="openModalLikes({{post.pk}})">{{ num_likes }} </a>
+        {% endif %}
     </div>
     <div class="post-username">
        published: <a href="/post/{{ post.pk }}">{{ post.post_timestamp | timesince}} </a> ago by <a href="../u/{{ post.user_id.id }}">{{ post.user_id.first_name }} {{ post.user_id.last_name }}</a>

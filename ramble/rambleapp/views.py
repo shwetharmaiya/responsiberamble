@@ -42,11 +42,13 @@ def index(request):
 
     # get all previous posts
     posts = Post.objects.all().order_by('-post_timestamp')
+    posts_and_likes = [(post, len(Like.objects.filter(post_id=post))) for post in posts]
 
     user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
     user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
     context = {'posts': posts, 'user_liked_posts': user_liked_posts,
-               'user_followers': user_followers, 'user_profile': user_profile}
+               'user_followers': user_followers, 'user_profile': user_profile,
+               'posts_and_likes': posts_and_likes}
     return HttpResponse(template.render(context, request))
 
 
@@ -90,9 +92,11 @@ def get_user_profile(request, user_id):
         profile_user = None
     if profile_user:
         user_posts = Post.objects.filter(user_id=profile_user).order_by('-post_timestamp')
+        user_posts_and_likes = [(post, len(Like.objects.filter(post_id=post))) for post in user_posts]
         profile_user_profile = Profile.objects.get(user_id=request.user.id)
 
         profile_context = {'profile_user': profile_user, 'posts': user_posts,
+                   'posts_and_likes': user_posts_and_likes,
                    'profile_user_profile': profile_user_profile,
                     }
     else:
@@ -114,13 +118,13 @@ def get_user_profile_likes(request, user_id):
     if profile_user:
         profile_user_profile = Profile.objects.get(user_id=request.user.id)
         profile_user_likes = [like.post_id for like in Like.objects.filter(user_id=profile_user)]
-        for postid in profile_user_likes:
-            print(postid)
-            print(dir(postid))
+        profile_user_posts_and_likes = [(post, len(Like.objects.filter(post_id=post))) for post in profile_user_likes]
+
 
         profile_context = {'profile_user': profile_user, 
                    'profile_user_profile': profile_user_profile,
                    'profile_user_likes': profile_user_likes,
+                   'profile_user_posts_and_likes': profile_user_posts_and_likes,
                     }
     else:
         profile_context = {}
@@ -189,7 +193,9 @@ def get_user_profile_followers(request, user_id):
 def get_ramblepost(request, post_id):
     try:
         post = Post.objects.get(pk=post_id)
-        context = {'post': post}
+        post_likes = len(Like.objects.filter(post_id=post))
+        context = {'post': post, 'num_likes': post_likes, }
+
     except Post.DoesNotExist:
         post = None
         context = {}
@@ -212,6 +218,14 @@ def get_ramblepost(request, post_id):
     template = loader.get_template('rambleapp/post.html')
     return HttpResponse(template.render(context, request))
 
+def likes_get(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    users_who_liked = [user.user_id for user in Like.objects.filter(post_id=post)]
+    users_who_liked_profiles = Profile.objects.all().filter(user_id__in=users_who_liked)
+    template = loader.get_template('rambleapp/display_liked_users.html')
+    context = {'users': users_who_liked_profiles}
+    return HttpResponse(template.render(context, request))
+
 
 def login(request):
     user = request.user
@@ -224,8 +238,9 @@ def login(request):
     template = loader.get_template('rambleapp/login.html')
 
     posts = Post.objects.all().order_by('-post_timestamp')
+    posts_and_likes = [(post, len(Like.objects.filter(post_id=post))) for post in posts]
 
-    context = {'twitter_login': twitter_login, 'posts': posts}
+    context = {'twitter_login': twitter_login, 'posts': posts, 'posts_and_likes': posts_and_likes}
     return HttpResponse(template.render(context, request))
 
 

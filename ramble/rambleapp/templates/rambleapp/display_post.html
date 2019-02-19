@@ -29,7 +29,7 @@
     {% if post.tags %}
         <div class='post-tags'>
             {% for tag in post.tags.all %}
-                <div class='post-tag'> {{ tag }} </div>
+                <a href="/tag/{{ tag }}" class='post-tag'> {{ tag }} </a> &nbsp; &nbsp; 
             {% endfor %}
         </div>
     {% endif%}

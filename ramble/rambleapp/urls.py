@@ -21,6 +21,8 @@ urlpatterns = [
 
   path('likes_get/<int:post_id>', views.likes_get, name='likes_get'),
 
+  path('tag/<str:tag_page>', views.get_tagpage, name='tag_page'),
+
   path('make_profile', views.make_profile, name='edit_your_profile'),
   path('post_profile', views.post_profile, name='post_profile'),
 

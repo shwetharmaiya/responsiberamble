@@ -218,6 +218,14 @@ def get_ramblepost(request, post_id):
     template = loader.get_template('rambleapp/post.html')
     return HttpResponse(template.render(context, request))
 
+def get_tagpage(request, tag_page):
+     posts = Post.objects.filter(tags__name__in=[tag_page])
+     posts_and_likes = [(post, len(Like.objects.filter(post_id=post))) for post in posts]
+     context = {'posts': posts, 'posts_and_likes': posts_and_likes, 'tag': tag_page}
+
+     template = loader.get_template('rambleapp/tag_page.html')
+     return HttpResponse(template.render(context, request))
+
 def likes_get(request, post_id):
     post = Post.objects.get(pk=post_id)
     users_who_liked = [user.user_id for user in Like.objects.filter(post_id=post)]
@@ -225,6 +233,7 @@ def likes_get(request, post_id):
     template = loader.get_template('rambleapp/display_liked_users.html')
     context = {'users': users_who_liked_profiles}
     return HttpResponse(template.render(context, request))
+
 
 
 def login(request):

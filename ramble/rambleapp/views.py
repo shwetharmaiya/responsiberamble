@@ -283,7 +283,7 @@ def post_ramble(request):
     # so it has a primary key
     # then you add tags to it using the add method. 
     # and save it again. 
-    tagslist = [str(r) for r in post_tags.split(',')]
+    tagslist = [str(r).strip() for r in post_tags.split(',')]
 
     new_post.tags.add(*tagslist)
     new_post.save()

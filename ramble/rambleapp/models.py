@@ -46,7 +46,9 @@ class Share(models.Model):
 class Comment(models.Model):
     user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
+    parent_id = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     comment_text = models.CharField(max_length=1000)
+    depth = models.PositiveIntegerField(default=0)
 
 
 class Follow(models.Model):

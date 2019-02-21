@@ -14,10 +14,13 @@ urlpatterns = [
   path('u/<int:user_id>/followers', views.get_user_profile_followers, name='user_profile_followers'),
 
   path('post/<int:post_id>', views.get_ramblepost, name='post'),
+
   path('ramblepost', views.post_ramble, name='post_a_ramble'),
   path('deletepost', views.delete_post, name='delete_a_ramble'),
   path('likepost', views.like_post, name='like_a_ramble'),
   path('followuser', views.follow_user, name='follow_a_user'),
+  path('commentpost', views.post_comment, name='post_a_comment'),
+  path('deletecomment', views.delete_comment, name='delete_a_comment'),
 
   path('likes_get/<int:post_id>', views.likes_get, name='likes_get'),
 

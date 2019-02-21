@@ -8,7 +8,7 @@ from django.contrib.auth import logout as auth_logout
 
 from social_django.models import UserSocialAuth
 
-from .models import Post, Like, Follow, Profile, InterestedUsers
+from .models import Post, Like, Follow, Profile, InterestedUsers, Comment
 from .forms import ProfileForm
 from django.contrib.auth.models import User as Auth_User
 
@@ -194,7 +194,13 @@ def get_ramblepost(request, post_id):
     try:
         post = Post.objects.get(pk=post_id)
         post_likes = len(Like.objects.filter(post_id=post))
-        context = {'post': post, 'num_likes': post_likes, }
+        comments = Comment.objects.filter(post_id=post, depth=0)
+        commenters = [comment.user_id for comment in comments]
+        commenter_profiles = {profile.user_id : profile 
+                        for profile in Profile.objects.all().filter(user_id__in=commenters)}
+        comment_and_profile_list = [(comment, commenter_profiles[comment.user_id]) for comment in comments]
+        context = {'post': post, 'num_likes': post_likes, \
+            'comments_and_profiles': comment_and_profile_list }
 
     except Post.DoesNotExist:
         post = None
@@ -295,12 +301,9 @@ def post_ramble(request):
 
 @login_required
 def post_profile(request):
-    print(request)
     if request.method == 'POST':
-        print("Request method is post")
         user = Auth_User.objects.get(pk=request.user.id)
         form = ProfileForm(request.POST, request.FILES)
-        print(form)
         if form.is_valid():
             new_profile = form.save(commit=False)
             new_profile.user_id = user
@@ -313,6 +316,34 @@ def post_profile(request):
             return HttpResponse("FUCK, form is invalid" + str(form.errors))
     return HttpResponseForbidden('allowed only via POST')
 
+@login_required
+def post_comment(request):
+    if request.method == 'POST':
+        user = Auth_User.objects.get(pk=request.user.id)
+        post_id = request.POST['post_id']
+        post = Post.objects.get(pk=post_id)
+        if not post:
+            return HttpResponse(status=400)
+        comment_text = request.POST['comment_text']
+        depth = 0
+        if 'parent_comment' in request.POST:
+            parent_comment_id = request.POST['parent_comment']
+        else:
+            parent_comment_id = None
+        if parent_comment_id: 
+            parent_comment = Comment.objects.get(pk=parent_comment_id)
+            depth = parent_comment.depth + 1
+            if parent_comment.post_id != post: 
+                return HttpResponse(status=400)
+        else: 
+            parent_comment = None
+        new_comment = Comment(user_id=user, post_id=post, comment_text=comment_text, 
+                                parent_id=parent_comment, depth=depth)
+        new_comment.save()
+        return HttpResponse(status=204)
+    return HttpResponseForbidden('allowed only via POST')
+
+
 
 @login_required
 def delete_post(request):
@@ -323,6 +354,19 @@ def delete_post(request):
         return HttpResponse(status=400)
     if post.user_id == user:
         post.delete()
+        return HttpResponse(status=204)
+    else:
+        return HttpResponse(status=400)
+
+@login_required
+def delete_comment(request):
+    user = Auth_User.objects.get(pk=request.user.id)
+    comment_id = request.POST['comment_id']
+    comment = Comment.objects.get(pk=comment_id)
+    if not comment:
+        return HttpResponse(status=400)
+    if comment.user_id == user:
+        comment.delete()
         return HttpResponse(status=204)
     else:
         return HttpResponse(status=400)

@@ -76,6 +76,7 @@
 
     }
 
+
     function follow_user(user_id)
     {
         if (document.getElementById("useradd_"+user_id).src.endsWith("{% static 'images/follows.png' %}"))
@@ -112,16 +113,86 @@
     {
         modalLikes.style.display = "block"
         modalLikesInner.innerHTML = "Loading..."
-        ajax_get("{% url 'likes_get' 123456 %}".replace('123456', post_id) , function(responseText) {
+        ajax_get("{% url 'likes_get' 123456 %}".replace('123456', post_id) , false, function(responseText) {
             modalLikesInner.innerHTML = responseText
         })
         return false
     }
 
-    function ajax_get(url, callback)
+    function keypressed_collect(event) 
+    {
+        console.log(event)
+        if (event.keyCode == 13) {
+            var collection_name = document.getElementById("new_collection");
+             data = {
+                collection_name: collection_name.value,
+                collection_desc: '',
+            }
+            var ajax = new XMLHttpRequest()
+            ajax.open("POST", "{% url 'create_collection' %}")
+            ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+            ajax.onreadystatechange = function(response)
+            {
+                console.log(response, this.status, this.readyState)
+
+                if (this.readyState == 4) {
+                    var json = JSON.parse(this.responseText);
+                    new_button = document.createElement('button')
+                    new_button.setAttribute('id', 'collection_' + json.id)
+                    imgsrc = "{% static 'images/collect.png' %}"
+                    new_button.innerHTML = '<img src="' + imgsrc + '" width="20px"/>' + json.name 
+                    colls = document.getElementById('all_collections')
+                    colls.insertBefore(new_button, colls.firstChild)
+                }
+            }
+            var formData = new FormData()
+            for(var i in data)
+                formData.append(i, data[i]);
+            ajax.send(formData)
+        }
+    }
+
+    function collect_post(post_id)
+    {
+        modalCollect.style.display = "block"
+        modalCollectInner.innerHTML = "Loading..."
+        ajax_get("{% url 'mycollections' 123456 %}".replace('123456', post_id), true, function(responseText) {
+            modalCollectInner.innerHTML = responseText
+        })
+        return false
+    }
+
+    function post_to_collection(collection_id, post_id)
+    {
+        user_comments = prompt("Any nice thing to say about this piece?")
+        data = {
+            collection_id: collection_id, 
+            post_id: post_id, 
+            user_comments: user_comments,
+        }
+        var ajax = new XMLHttpRequest()
+        ajax.open("POST", "{% url 'add_to_collection' %}")
+        ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+        ajax.onreadystatechange = function(response)
+        {
+            console.log(response, this.status, this.readyState)
+        }
+
+        var formData = new FormData()
+        for(var i in data)
+            formData.append(i, data[i]);
+
+        ajax.send(formData)
+    }
+
+    function ajax_get(url, add_csrf, callback)
     {
         var ajax = new XMLHttpRequest()
         ajax.open("GET", url)
+        if (add_csrf) 
+        {
+            ajax.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+        }
         ajax.onreadystatechange = function(response)
         {
             if (this.readyState==4) 
@@ -178,6 +249,12 @@
 <div id=modalLikes onclick="if (event.target==this) {this.style.display='none'}" style="display:none;position:fixed;top:0;height:100vh;left:0;width:100vw;
 background:rgba(100,100,100,0.5);">
     <div id=modalLikesInner style="position:fixed;top:30vh;height:40vh;left:30vw;width:40vw;
+background:white;box-shadow:1px 1px 10px #888; border-radius:8px;overflow-y:scroll">
+    </div>
+</div>
+<div id=modalCollect onclick="if (event.target==this) {this.style.display='none'}" style="display:none;position:fixed;top:0;height:100vh;left:0;width:100vw;
+background:rgba(100,100,100,0.5);">
+    <div id=modalCollectInner style="position:fixed;top:30vh;height:40vh;left:30vw;width:40vw;
 background:white;box-shadow:1px 1px 10px #888; border-radius:8px;overflow-y:scroll">
     </div>
 </div>

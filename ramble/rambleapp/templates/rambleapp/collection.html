@@ -1,6 +1,20 @@
+{% extends './base.html' %}
+{% block content %}
 {% load static %}
 
-<div id="post_{{post.pk}}" style="transition:all 1s ease" class="post">
+{% if collector_profile and collection %}
+    <div>
+    	<img src="{{ collector_profile.profile_pic.url }}" width="50px"/>
+    	<h2 style="text-align:center"> {{ collection.collection_name }} </h2>
+    	<p> by {{ collector_profile.full_name }} </p>
+
+        <p> {{ collection.collecton_desc }} </p>
+    </div>
+
+    {% for collection_post in collection_posts %}
+    {% with collection_post.post_id as post %}
+
+    <div id="post_{{post.pk}}" style="transition:all 1s ease" class="post">
     <div class="post-title">
         <a href="/post/{{ post.pk }}">{{ post.post_title }}</a>
 
@@ -14,8 +28,9 @@
         {% if num_likes > 0 %}
             <a href='javascript:void(0)' onclick="openModalLikes({{post.pk}})">{{ num_likes }} </a>
         {% endif %}
+
         <button onclick="collect_post({{ post.pk }})" class="iconbutton" style="margin-left:5px;padding:2px">
-            {% if user_collected_posts and post.pk in user_collected_posts %}
+        	{% if user_collected_posts and post.pk in user_collected_posts %}
                 <img id="collect_{{post.pk}}" src="{% static 'images/collected_button.png' %}" width="12px" height="12px">
             {% else %}
                 <img id="collect_{{post.pk}}" src="{% static 'images/collect_button.png' %}" width="12px" height="12px">
@@ -64,3 +79,11 @@
         anchor.style.display = "block"
     }
 </script>
+	{% endwith %}
+    {% endfor %}
+	
+{% else %}
+    <p> 404 Collection Not Found</p>
+{% endif %}
+
+{% endblock %}

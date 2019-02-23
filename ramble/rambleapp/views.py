@@ -1,3 +1,4 @@
+import json 
 from django.shortcuts import redirect
 
 # Create your views here.
@@ -5,12 +6,12 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.template import loader
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.models import User as Auth_User
 
 from social_django.models import UserSocialAuth
 
-from .models import Post, Like, Follow, Profile, InterestedUsers, Comment
+from .models import Post, Like, Follow, Profile, InterestedUsers, Comment, Collection, CollectionPost
 from .forms import ProfileForm
-from django.contrib.auth.models import User as Auth_User
 
 # Pages
 
@@ -32,7 +33,7 @@ def post_email(request):
 
 @login_required
 def index(request):
-    user = Auth_User.objects.get(pk=request.user.id)
+    user = Auth_User.objects.get(pk=request.user.id) 
     try:
         user_profile = Profile.objects.get(user_id=request.user.id)
     except Profile.DoesNotExist:
@@ -79,9 +80,13 @@ def twitter_user_context(request_obj):
         user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
         user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
 
+        collections = Collection.objects.filter(user_id=user)
+        collection_posts = [post.post_id.pk for post in CollectionPost.objects.filter(collection_id__user_id=user)]
+
         context['user_liked_posts'] = user_liked_posts
         context['user_followers'] = user_followers
         context['user_profile'] = user_profile
+        context['user_collected_posts'] = collection_posts
     return context 
 
 
@@ -205,24 +210,51 @@ def get_ramblepost(request, post_id):
     except Post.DoesNotExist:
         post = None
         context = {}
-    try:
-        twitter_login = request.user.social_auth.get(provider='twitter')
-    except UserSocialAuth.DoesNotExist:
-        twitter_login = None
-    except AttributeError:
-        twitter_login = None
-    if twitter_login:
-        user = Auth_User.objects.get(pk=request.user.id)
-        user_profile = Profile.objects.get(user_id=request.user.id)
-        user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
-        user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
 
-        context['user_liked_posts'] = user_liked_posts
-        context['user_followers'] = user_followers
-        context['user_profile'] = user_profile
+    loggedin_user_context = twitter_user_context(request)
+
+    total_context = {**context, **loggedin_user_context}
 
     template = loader.get_template('rambleapp/post.html')
+    return HttpResponse(template.render(total_context, request))
+
+
+def get_collection(request, collection_id):
+    try:
+        collection = Collection.objects.get(pk=collection_id)
+        collection_posts = CollectionPost.objects.filter(collection_id=collection)
+        collection_user_profile = Profile.objects.get(user_id=collection.user_id)
+        context = {'collection': collection, 'collection_posts': collection_posts, 'collector_profile': collection_user_profile}
+    except Collection.DoesNotExist:
+        context = {}
+
+    loggedin_user_context = twitter_user_context(request)
+
+    total_context = {**context, **loggedin_user_context}
+
+    template = loader.get_template('rambleapp/collection.html')
+    return HttpResponse(template.render(total_context, request))
+
+
+@login_required
+def get_user_collections(request, post_id):
+    try:
+        user = Auth_User.objects.get(pk=request.user.id)
+    except Auth_User.DoesNotExist:
+        context = {}
+    try:
+        collections = Collection.objects.filter(user_id=user)
+        relevant_collections = CollectionPost.objects.filter(post_id__pk=post_id, collection_id__user_id=user)
+        context = {'collections': collections, 'post_id': post_id}
+        if relevant_collections:
+            context['relevant_collections'] = [coll.collection_id.pk for coll in relevant_collections]
+            print(context['relevant_collections'])
+    except Collection.DoesNotExist:     
+        context = {}
+
+    template = loader.get_template('rambleapp/collection_modal.html')
     return HttpResponse(template.render(context, request))
+
 
 def get_tagpage(request, tag_page):
      posts = Post.objects.filter(tags__name__in=[tag_page])
@@ -231,6 +263,7 @@ def get_tagpage(request, tag_page):
 
      template = loader.get_template('rambleapp/tag_page.html')
      return HttpResponse(template.render(context, request))
+
 
 def likes_get(request, post_id):
     post = Post.objects.get(pk=post_id)
@@ -316,6 +349,7 @@ def post_profile(request):
             return HttpResponse("FUCK, form is invalid" + str(form.errors))
     return HttpResponseForbidden('allowed only via POST')
 
+
 @login_required
 def post_comment(request):
     if request.method == 'POST':
@@ -342,7 +376,6 @@ def post_comment(request):
         new_comment.save()
         return HttpResponse(status=204)
     return HttpResponseForbidden('allowed only via POST')
-
 
 
 @login_required
@@ -415,7 +448,7 @@ def follow_user(request):
     try:
         follower = Auth_User.objects.get(pk=follower_id)
         followee = Auth_User.objects.get(pk=followee_id)
-    except Follow.DoesNotExist:
+    except Auth_User.DoesNotExist:
         return HttpResponse(status=400)
     # check in followers table if the following relationship exists.
     try:
@@ -428,3 +461,53 @@ def follow_user(request):
     # If not, add relationship.
     followship.delete()
     return HttpResponse(204)
+
+
+@login_required
+def create_collection(request):
+    if request.method == 'POST':
+        user_id = request.user.id 
+        try:
+            collector = Auth_User.objects.get(pk=user_id)
+        except Auth_User.DoesNotExist:
+            return HttpResponse(status=400)
+        collection_name = request.POST['collection_name']
+        collection_desc = request.POST['collection_desc']
+
+        new_collection = Collection(user_id=collector, \
+            collection_name=collection_name, collection_desc=collection_desc)
+        new_collection.save()
+        col_dict = {}
+        col_dict['id'] = new_collection.pk 
+        col_dict['name'] = collection_name
+        return HttpResponse(json.dumps(col_dict))
+
+
+@login_required
+def add_to_collection(request):
+    if request.method == 'POST':
+        user_id = request.user.id 
+        try:
+            collector = Auth_User.objects.get(pk=user_id)
+        except Auth_User.DoesNotExist:
+            return HttpResponse(status=400, reason="User does not exist!")
+        collection_id = request.POST['collection_id']
+        try:
+            collection = Collection.objects.get(pk=collection_id)
+        except Collection.DoesNotExist:
+            return HttpResponse(status=400, reason="Collection does not exist!")
+        post_id = request.POST['post_id']
+        try:
+            post = Post.objects.get(pk=post_id)
+        except Post.DoesNotExist:
+            return HttpResponse(status=400, reason="Post does not exist!")
+        if collector != collection.user_id:
+            return HttpResponse(status=400, reason="user isn't owner of the collection!")
+        print(request.POST)
+        user_comment = request.POST['user_comments']
+        print(collection, post, user_comment)
+        new_collection_post = CollectionPost(collection_id=collection, post_id=post, user_comment=user_comment)
+        new_collection_post.save()
+        return HttpResponse(204)
+
+    return HttpResponseForbidden('allowed only via POST')

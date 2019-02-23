@@ -31,6 +31,18 @@ class Post(models.Model):
     tags = TaggableManager()
 
 
+class Collection(models.Model):
+    user_id = models.ForeignKey(Auth_User, on_delete=models.CASCADE)
+    collection_name = models.CharField(max_length=100)
+    collection_desc = models.CharField(max_length=1000)
+
+
+class CollectionPost(models.Model):
+    collection_id = models.ForeignKey(Collection, on_delete=models.CASCADE)
+    post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user_comment = models.CharField(max_length=1000, null=True, blank=True)
+
+
 class Like(models.Model):
     class Meta:
         unique_together = (('user_id', 'post_id'),)

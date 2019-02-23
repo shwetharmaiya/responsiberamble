@@ -12,6 +12,7 @@ urlpatterns = [
   path('u/<int:user_id>/likes', views.get_user_profile_likes, name='user_profile_likes'),
   path('u/<int:user_id>/follows', views.get_user_profile_follows, name='user_profile_follows'),
   path('u/<int:user_id>/followers', views.get_user_profile_followers, name='user_profile_followers'),
+  path('u/<int:user_id>/collections', views.get_user_profile_collections, name='user_profile_collections'),
 
   path('collection/<int:collection_id>', views.get_collection, name='collection'),
   path('mycollections/<int:post_id>', views.get_user_collections, name='mycollections'), 

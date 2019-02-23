@@ -20,6 +20,7 @@ def landing_page(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
+
 def post_email(request):
     if request.POST:
         email = request.POST['email']
@@ -30,6 +31,7 @@ def post_email(request):
             new_interested_user.save()
         return HttpResponse(204)
     return HttpResponseForbidden("Allowed Only Via Post")
+
 
 @login_required
 def index(request):
@@ -47,9 +49,11 @@ def index(request):
 
     user_liked_posts = set([like.post_id.id for like in Like.objects.filter(user_id=user)])
     user_followers = set([follow.followee_id.id for follow in Follow.objects.filter(follower_id=user)])
+    collection_posts = [post.post_id.pk for post in CollectionPost.objects.filter(collection_id__user_id=user)]
+
     context = {'posts': posts, 'user_liked_posts': user_liked_posts,
                'user_followers': user_followers, 'user_profile': user_profile,
-               'posts_and_likes': posts_and_likes}
+               'posts_and_likes': posts_and_likes, 'user_collected_posts': collection_posts}
     return HttpResponse(template.render(context, request))
 
 
@@ -192,6 +196,31 @@ def get_user_profile_followers(request, user_id):
     context = {**profile_context, **loggedin_user_context}
 
     template = loader.get_template('rambleapp/user_followers.html')
+    return HttpResponse(template.render(context, request))
+
+
+def get_user_profile_collections(request, user_id):
+    try:
+        profile_user = Auth_User.objects.get(pk=user_id)
+    except Auth_User.DoesNotExist:
+        profile_user = None
+    if profile_user:
+        profile_user_profile = Profile.objects.get(user_id=profile_user)
+        profile_context = {'profile_user': profile_user,
+                   'profile_user_profile': profile_user_profile}
+        try:
+            collections = Collection.objects.filter(user_id=profile_user)
+            collections_and_posts = [ (collection, CollectionPost.objects.filter(collection_id=collection))\
+                                for collection in collections ]
+            profile_context['collections_and_posts'] = collections_and_posts
+        except Collection.DoesNotExist:
+            pass
+
+    loggedin_user_context = twitter_user_context(request)
+
+    context = {**profile_context, **loggedin_user_context}
+
+    template = loader.get_template('rambleapp/user_collections.html')
     return HttpResponse(template.render(context, request))
 
 

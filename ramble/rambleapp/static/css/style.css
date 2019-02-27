@@ -5,7 +5,7 @@ html {
 
 header, .header {
 	padding: 2px 30px 2px;
-	background: #212121;
+	background: #00b7b2;
 	color: #ff5131;
 	font: 20px Arial, sans-serif;
 	box-shadow: 0 0 9px #ffffff;
@@ -93,7 +93,7 @@ table {
 
 .iconbutton {
     background: #fafafa;
-    color: #212121;
+    color: #00b7b2;
     padding: 6px;
 	margin: 5px 0px 5px 5px;
     border-radius: 50%;

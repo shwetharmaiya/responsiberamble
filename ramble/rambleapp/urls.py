@@ -6,7 +6,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-  path('', views.index, name='index'),
+  path('index', views.index, name='index'),
   # path('accounts/profile/', views.index, name='index'),
   path('u/<int:user_id>', views.get_user_profile, name='user_profile'),
   path('u/<int:user_id>/likes', views.get_user_profile_likes, name='user_profile_likes'),
@@ -39,7 +39,7 @@ urlpatterns = [
 
   path('login', views.login, name='login'),
   path('logout', views.logout, name='logout'),
-  path('landing_page', views.landing_page, name='landing_page'),
+  path('', views.landing_page, name='landing_page'),
   path('subscribe_email', views.post_email, name='subscribe_email'),
   # path('accounts/login/', views.login, name='sociallogin'),
   url(r'^oauth/', include('social_django.urls', namespace='social')),
